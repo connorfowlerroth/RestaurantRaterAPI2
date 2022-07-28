@@ -49,5 +49,29 @@ namespace RestaurantRaterAPI.Controllers
             return Ok(restaurant);
         }
 
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateRestaurant([FromForm] RestaurantEdit model, [FromRoute] int id)
+        {
+            var OldRestaurant = await _context.Restaurants.FindAsync(id);
+            if (OldRestaurant == null)
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            if (!string.IsNullOrEmpty(model.Name))
+            {
+                OldRestaurant.Name = model.Name;
+            }
+            if (!string.IsNullOrEmpty(model.Location))
+            {
+                OldRestaurant.Location = model.Location;
+            }
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
